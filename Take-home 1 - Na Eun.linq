@@ -18,7 +18,7 @@
 
 //Question 1:
 //Every upcoming club activity (January 1, 2025 and onward), no campus venue == "Scheduled room", no name == "BTech Club" 
-//Columns: start date, venue name, hosting club name, activity title, order by ascending start date 
+//Display start date, venue name, hosting club name, activity title, order by ascending start date 
 
 ClubActivities
 	.Where(x => x.StartDate >= new DateTime(2025, 01, 01)
@@ -35,10 +35,39 @@ ClubActivities
 	.Dump();
 
 //Question 2:
+//Translate school code into user-friendly name, count how many courses are mandatory / optional, show only programs with at least (>=) 22 required courses
+//Display full school name, program name, required courses count(), optional courses count(), order by ascending program name
 
+Programs
+	.Select(x => new 
+	{
+		School = x.SchoolCode == "SAMIT" ? "School of Advance Media and IT" :
+				x.SchoolCode == "SEET" ? "School of Electrical Engineering Technology" : "Unknown",
+		Program = x.ProgramName,
+		RequiredCourseCount = x.ProgramCourses.Count(Required),
+		OptionalCourseCount = x.ProgramCourses.Count(Required)
+		
+	})
+	.Where(x => x.RequiredCourseCount >= 22)
+	.OrderBy(x => x.Program)
+	.Dump();
 
 //Question 3:
+//Filter students with 0 entries in StudentPayments, country != "Canada", 
+//Display student number, country name in uppercase, full name, clubmembership count (none if 0 clubs), Order by last name ascending
 
+Students
+	.Where(x => x.Countries.CountryName != "CANADA" && x.StudentPayments.Count() == 0)
+	.OrderBy(x => x.LastName)
+	.Select(x => new
+	{
+		StudentNumber = x.StudentNumber,
+		CountryName = x.Countries.CountryName,
+		FullName = $"{x.FirstName} {x.LastName}",
+		ClubMembershipCount = x.ClubMembers.Count() == 0 ? x.ClubMembers.ToString("None") : x.ClubMembers.Sum(c => c.StudentNumber)
+	})
+	.Dump();
+	
 
 //Question 4:
 

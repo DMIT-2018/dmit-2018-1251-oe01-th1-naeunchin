@@ -74,7 +74,7 @@ Students
 //Question 4:
 //Filter employees by position == "Instructor", releasedate == null, ClassOffering >= 1
 //Order by descending ClassOfferings, Thenby LastName
-//Display ProgramName, FullName, WorkLoad
+//Display ProgramName, FullName, WorkLoad (>24 = "High", >8 = "Med", otherwise "Low")
 
 Employees
 	.Where(x => x.Position.Description == "Instructor" && x.ReleaseDate == null && x.ClassOfferings.Count() >= 1)
@@ -85,9 +85,23 @@ Employees
 		ProgramName = x.Program.ProgramName,
 		FullName = $"{x.FirstName} {x.LastName}",
 		WorkLoad = x.ClassOfferings.Count() > 24 ? "High" :
-					x.ClassOfferings.Count() > 8 ? "Medium" : "Low"
+					x.ClassOfferings.Count() > 8 ? "Med" : "Low"
 					
 	})
 	.Dump();
 
 //Question 5:
+//List club faculty's supervisor, membership size, upcoming activity count
+//Display Supervisor (name or "Unknown" for null values), Club (name), MemberCount (# of entries in ClubMembers), Acivities (count or "None Schedule" if ClubActivities.Count() == 0)
+//Order by descending member count
+
+Clubs
+	.Select(x => new
+	{
+		Supervisor = x.Employee == null ? "Unknown" : $"{x.Employee.FirstName} {x.Employee.LastName}",
+		Club = x.ClubName,
+		MemberCount = x.ClubMembers.Count(),
+		Activities = x.ClubActivities.Count() == 0 ? "None Schedule" : x.ClubActivities.Count().ToString()
+	})
+	.OrderByDescending(x => x.MemberCount)
+	.Dump();

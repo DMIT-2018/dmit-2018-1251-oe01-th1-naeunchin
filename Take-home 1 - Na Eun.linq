@@ -65,7 +65,7 @@ Students
 		StudentNumber = x.StudentNumber,
 		CountryName = x.Countries.CountryName,
 		FullName = $"{x.FirstName} {x.LastName}",
-		ClubMembershipCount = x.ClubMembers.Count() == 0 ? x.ClubMembers.ToString("None") : x.ClubMembers.Sum(c => c.StudentNumber)
+		ClubMembershipCount = x.ClubMembers.Count() == 0 ? "None" : x.ClubMembers.Count().ToString()
 	})
 	.Dump();
 	

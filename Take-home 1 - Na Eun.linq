@@ -44,13 +44,14 @@ Programs
 		School = x.SchoolCode == "SAMIT" ? "School of Advance Media and IT" :
 				x.SchoolCode == "SEET" ? "School of Electrical Engineering Technology" : "Unknown",
 		Program = x.ProgramName,
-		RequiredCourseCount = x.ProgramCourses.Count(Required),
-		OptionalCourseCount = x.ProgramCourses.Count(Required)
+		RequiredCourseCount = x.ProgramCourses.Count(x => x.Required),
+		OptionalCourseCount = x.ProgramCourses.Count(x => !x.Required)
 		
 	})
 	.Where(x => x.RequiredCourseCount >= 22)
 	.OrderBy(x => x.Program)
 	.Dump();
+
 
 //Question 3:
 //Filter students with 0 entries in StudentPayments, country != "Canada", 

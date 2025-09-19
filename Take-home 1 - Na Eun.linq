@@ -18,7 +18,8 @@
 
 //Question 1:
 //Every upcoming club activity (January 1, 2025 and onward), no campus venue == "Scheduled room", no name == "BTech Club" 
-//Display start date, venue name, hosting club name, activity title, order by ascending start date 
+//Display start date, venue name, hosting club name, activity title
+//Order by ascending start date 
 
 ClubActivities
 	.Where(x => x.StartDate >= new DateTime(2025, 01, 01)
@@ -36,7 +37,8 @@ ClubActivities
 
 //Question 2:
 //Translate school code into user-friendly name, count how many courses are mandatory / optional, show only programs with at least (>=) 22 required courses
-//Display full school name, program name, required courses count(), optional courses count(), order by ascending program name
+//Display full school name, program name, required courses count(), optional courses count()
+//Order by ascending program name
 
 Programs
 	.Select(x => new 
@@ -52,13 +54,13 @@ Programs
 	.OrderBy(x => x.Program)
 	.Dump();
 
-
 //Question 3:
 //Filter students with 0 entries in StudentPayments, country != "Canada", 
-//Display student number, country name in uppercase, full name, clubmembership count (none if 0 clubs), Order by last name ascending
+//Display student number, country name in uppercase, full name, clubmembership count (none if 0 clubs)
+//Order by last name ascending
 
 Students
-	.Where(x => x.Countries.CountryName != "CANADA" && x.StudentPayments.Count() == 0)
+	.Where(x => x.Countries.CountryName != "CANADA" && !x.StudentPayments.Any())
 	.OrderBy(x => x.LastName)
 	.Select(x => new
 	{
@@ -67,10 +69,25 @@ Students
 		FullName = $"{x.FirstName} {x.LastName}",
 		ClubMembershipCount = x.ClubMembers.Count() == 0 ? "None" : x.ClubMembers.Count().ToString()
 	})
-	.Dump();
-	
+	.Dump();	
 
 //Question 4:
+//Filter employees by position == "Instructor", releasedate == null, ClassOffering >= 1
+//Order by descending ClassOfferings, Thenby LastName
+//Display ProgramName, FullName, WorkLoad
 
+Employees
+	.Where(x => x.Position.Description == "Instructor" && x.ReleaseDate == null && x.ClassOfferings.Count() >= 1)
+	.OrderByDescending(x => x.ClassOfferings.Count())
+	.ThenBy(x => x.LastName)
+	.Select(x => new 
+	{
+		ProgramName = x.Program.ProgramName,
+		FullName = $"{x.FirstName} {x.LastName}",
+		WorkLoad = x.ClassOfferings.Count() > 24 ? "High" :
+					x.ClassOfferings.Count() > 8 ? "Medium" : "Low"
+					
+	})
+	.Dump();
 
 //Question 5:

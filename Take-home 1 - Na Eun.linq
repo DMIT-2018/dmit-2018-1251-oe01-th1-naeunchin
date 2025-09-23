@@ -17,7 +17,7 @@
 //Student Name: Na Eun Chin
 
 //Question 1:
-//Every upcoming club activity (January 1, 2025 and onward), no campus venue == "Scheduled room", no name == "BTech Club" 
+//Every upcoming club activity (January 1, 2025 and onward), campus venue != "Scheduled room", name != "BTech Club" 
 //Display start date, venue name, hosting club name, activity title
 //Order by ascending start date 
 
@@ -61,6 +61,7 @@ Programs
 
 Students
 	.Where(x => x.Countries.CountryName != "CANADA" && !x.StudentPayments.Any())
+	//I'm using OrderBy before Select because LastName is not included in the anonymous dataset 
 	.OrderBy(x => x.LastName)
 	.Select(x => new
 	{
@@ -78,6 +79,7 @@ Students
 
 Employees
 	.Where(x => x.Position.Description == "Instructor" && x.ReleaseDate == null && x.ClassOfferings.Count() >= 1)
+	//I'm using OrderBy before Select because ClassOfferings.Count() is not included in the anonymous dataset 
 	.OrderByDescending(x => x.ClassOfferings.Count())
 	.ThenBy(x => x.LastName)
 	.Select(x => new 
@@ -85,8 +87,7 @@ Employees
 		ProgramName = x.Program.ProgramName,
 		FullName = $"{x.FirstName} {x.LastName}",
 		WorkLoad = x.ClassOfferings.Count() > 24 ? "High" :
-					x.ClassOfferings.Count() > 8 ? "Med" : "Low"
-					
+					x.ClassOfferings.Count() > 8 ? "Med" : "Low"	
 	})
 	.Dump();
 
